@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Weather App</title>
+<style>
+body{
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
+                url("https://static.vecteezy.com/system/resources/thumbnails/026/186/529/small/twillight-sky-blurred-background-ai-generated-photo.jpg") no-repeat center center/cover;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    font-family:Arial;
+}
+.card{
+    background:linear-gradient(145deg,#ff6fd8,#3813c2);
+    padding:30px;
+    border-radius:20px;
+    text-align:center;
+    color:white;
+    width:350px;
+}
+input{
+    padding:10px;
+    border-radius:20px;
+    border:none;
+    width:70%;
+}
+button{
+    padding:10px;
+    border-radius:50%;
+    border:none;
+    cursor:pointer;
+}
+.weather-details{
+    display:none;
+    margin-top:20px;
+}
+.weather-icon{
+    width:80px;
+    margin:15px 0;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Weather App</h2>
+    <input type="text" id="city-search" placeholder="Enter city">
+    <button onclick="checkWeather()">🔍</button>
+
+    <div class="weather-details">
+        <h3 class="city"></h3>
+        <h1 class="temp"></h1>
+        <p class="description"></p>
+        <img class="weather-icon" src="">
+        <p>Humidity: <span class="humidity"></span></p>
+        <p>Wind Speed: <span class="wind"></span></p>
+    </div>
+</div>
+
+<script>
+
+const apiKey = "d76f72b753d0199e10fc57c7367a4ee7";
+const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+async function checkWeather(){
+    const city = document.getElementById("city-search").value;
+    if(city === "") return;
+
+    const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+    const data = await response.json();
+
+    if(data.cod == 200){
+
+        document.querySelector(".weather-details").style.display = "block";
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+        document.querySelector(".description").innerHTML = data.weather[0].description;
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + " km/h";
+
+        let condition = data.weather[0].main;
+        let icon = document.querySelector(".weather-icon");
+
+        if(condition === "Clouds"){
+            icon.src = "https://cdn-icons-png.flaticon.com/512/1779/1779940.png";
+        }
+        else if(condition === "Clear"){
+            icon.src = "https://cdn-icons-png.flaticon.com/512/1779/1779940.png";
+        }
+        else{
+            icon.src = "https://cdn-icons-png.flaticon.com/512/869/869869.png";
+        }
+
+    } else {
+        alert("City not found 😢");
+        document.querySelector(".weather-details").style.display = "none";
+    }
+}
+
+</script>
+
+</body>
+</html>
